@@ -4,17 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Space+Mono&display=swap" rel="stylesheet">
     <title>Etch-A-Sketch</title>
 </head>
 <body>
-    <div id="input-container">
-        <label for="item"> Enter a number from 1 to 100! </label>
-        <input type="text" id="userInput">
-        <button>Submit</button>
-    </div>
-    <div id="grid-container">
-        
-    </div>
+    <header>
+        <h1 class="hero-title">Etch-A-Sketch</h1>
+    </header>
+
+        <div class="container">
+            <div id="input-container" class="input-container">
+                <label for="item"> Enter a number from 1 to 100! </label>
+                <div class="input-wrapper">
+                    <input type="text" id="userInput" placeholder="1 to 100">
+                    <button>SUBMIT</button>
+                </div>
+            </div>
+
+            
+            <div id="grid-container" class="grid-container">
+                <!-- contianer that's gonna hold the grid -->
+            </div>
+        </div>
+
+        <footer>
+            <h3>The Project Odin | Etch-A-Sketch Project </h3>
+        </footer>
     <script src="app.js"></script>
 </body>
 </html>
