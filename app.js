@@ -83,7 +83,7 @@ const InputValidator = {
       return null;
     }
 
-    if (numValue < 0 || numValue > 101) {
+    if (numValue < 1 || numValue > 100) {
       this.showErrorMessage('Please enter a number between 1 and 100');
       return null;
     }
