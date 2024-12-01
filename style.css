@@ -76,6 +76,22 @@ body {
     background-color: rgb(209, 255, 205);
 }
 
+.message-container {
+    display: grid;
+    place-content: center;
+    height: 65px;
+    padding: 1rem;
+}
+
+.message-container .display-message {
+    display: block;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: 600;
+
+    letter-spacing: 1px;
+}
+
 
 .grid-container {
     display: flex;
@@ -96,8 +112,7 @@ body {
 
 .grid {
     flex: 1;
-    border: 1px solid black;
-    background: rgb(255, 192, 203, 0.1);
+    border: 1px solid rgba(79, 79, 79, 0.08);
 }
 
 footer {

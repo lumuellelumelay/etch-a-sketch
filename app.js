@@ -1,83 +1,163 @@
-const inputContainer = document.querySelector('#input-container');
-const gridContainer = document.querySelector('#grid-container');
-const userInput = document.querySelector('#userInput');
-const button = document.querySelector('button');
-
-let tempNumber = 0;
-
 // Need to do
 // Features:
-// ------ Able to change color
 // ------ Able to delete the grid
 // ------ Able to clear the grid
-// ------ Able to change the size of the grid accorinding to the size of the H(value) x W(value)
 // ------ Able to make the the grid darker when it pass through again
-// Main Feature:
-// ------ Mousehover
 
-// Function to create grids
-const createGrid = function (number) {
-  // creating rows
-  for (let i = 0; i < number; i++) {
+// Function helper for color generator
+const colorGeneratorManager = {
+  colorRandomizer() {
+    return Math.floor(Math.random() * 256);
+  },
+
+  colorGenerator(opacity = 0) {
+    const r = this.colorRandomizer();
+    const g = this.colorRandomizer();
+    const b = this.colorRandomizer();
+
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  },
+};
+
+// Grid Manager Module
+const GridManager = {
+  // creating cell for grid
+  createGrid() {
+    const grid = document.createElement('div');
+    grid.classList.add('grid');
+    return grid;
+  },
+
+  // generating row for grid
+  createRow() {
     const row = document.createElement('div');
     row.classList.add('row');
-    gridContainer.appendChild(row);
+    return row;
+  },
 
-    // generating cell for grids
-    for (let k = 0; k < number; k++) {
-      const grid = document.createElement('div');
-      grid.classList.add('grid');
-      row.appendChild(grid);
-    }
-  }
-};
+  // generating grid
+  gridGenerator(size) {
+    const gridContainer = document.querySelector('#grid-container');
+    gridContainer.replaceChildren();
 
-// Function to clear the grids
-const clearGrid = function (number) {
-  for (let i = 0; i < number; i++) {
-    const rows = document.querySelector('.row');
-    gridContainer.removeChild(rows);
-  }
-};
+    for (let i = 0; i < size; i++) {
+      const row = this.createRow();
+      for (let k = 0; k < size; k++) {
+        const grid = this.createGrid();
 
-// Helper function to check if the grid is existing
-function gridExist(number) {
-  if (number === 0) {
-    createGrid(number);
-    tempNumber = number;
-  } else {
-    clearGrid(tempNumber);
-    createGrid(number);
-    tempNumber = number;
-  }
-}
+        // generating the colors for the grid
+        const gridColor = colorGeneratorManager.colorGenerator();
+        grid.style.backgroundColor = gridColor;
 
-// Function to add the grid to the gridContainer
-const addGrid = function () {
-  const inputValue = userInput.value;
-  userInput.value = '';
+        // initial opacity
+        let opacity = 0;
 
-  // checking if the user's input is a number
-  if (isNaN(Number(inputValue))) {
-    console.log(`${inputValue} not a number!`);
-  } else {
-    let numValue = Number(inputValue);
+        grid.addEventListener('mouseover', (e) => {
+          let currentGrid = e.target;
 
-    // checking if the number is within the range of 1 to 100
-    if (numValue > 0 && numValue < 101) {
-      if (Number.isInteger(numValue)) {
-        console.log(`${numValue} is a number`);
-        gridExist(numValue);
-      } else {
-        console.log(
-          `${numValue} is a float, rounded to ${Math.round(numValue)}`
-        );
-        gridExist(numValue);
+          // adding opacity 0.1 per hover
+          const newOpacity = () => {
+            opacity += 0.1;
+
+            // Extracting color from the current grid
+            const rgbCheck = currentGrid.style.backgroundColor.match(/\d+/g);
+            if (rgbCheck) {
+              const [r, g, b] = rgbCheck;
+              currentGrid.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${opacity})`;
+            }
+            return opacity;
+          };
+          newOpacity();
+        });
+
+        row.appendChild(grid);
       }
-    } else {
-      console.log('Please enter a valid number between 0 and 100!');
+      gridContainer.appendChild(row);
     }
-  }
+  },
 };
 
-button.addEventListener('click', addGrid);
+// Input Validator Module
+const InputValidator = {
+  // checking users input
+  checkInput(inputValue) {
+    const numValue = Number(inputValue.trim());
+
+    // validate input
+    if (isNaN(numValue)) {
+      this.showErrorMessage('Please enter a valid number!');
+      return null;
+    }
+
+    if (numValue < 0 || numValue > 101) {
+      this.showErrorMessage('Please enter a number between 1 and 100');
+      return null;
+    }
+
+    if (Number.isInteger(numValue)) {
+      this.showGridMessage(`The grid is ${numValue} x ${numValue}`);
+      return numValue;
+    } else {
+      const roundedNumValue = Math.round(numValue);
+      this.showGridMessage(
+        `${numValue} is a float! rounded to ${roundedNumValue}`
+      );
+      return roundedNumValue;
+    }
+  },
+
+  showErrorMessage(message) {
+    const errorMessage = document.querySelector('.display-message');
+    if (errorMessage) {
+      errorMessage.textContent = message;
+      errorMessage.style.display = 'block';
+    }
+  },
+
+  showGridMessage(message) {
+    const gridMessage = document.querySelector('.display-message');
+    if (gridMessage) {
+      gridMessage.textContent = message;
+      gridMessage.style.display = 'block';
+    }
+  },
+};
+
+// Event Handling Module
+const EventHandler = {
+  initial() {
+    const userInput = document.querySelector('#userInput');
+    const button = document.querySelector('button');
+
+    // if the user pressed the button
+    button.addEventListener('click', this.sumbitHandler.bind(this));
+
+    // if the user pressed enter
+    userInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        this.sumbitHandler(e);
+      }
+    });
+  },
+
+  sumbitHandler(event) {
+    event.preventDefault();
+
+    const userInput = document.querySelector('#userInput');
+    const inputValue = userInput.value;
+    userInput.value = '';
+
+    // checking and processing input
+    const validSize = InputValidator.checkInput(inputValue);
+
+    // create grid if input is valid
+    if (validSize) {
+      GridManager.gridGenerator(validSize);
+    }
+  },
+};
+
+// Initialization
+document.addEventListener('DOMContentLoaded', () => {
+  EventHandler.initial();
+});
