@@ -1,5 +1,5 @@
-// Function helper for color generator
-const colorGeneratorManager = {
+// Color generator
+const ColorGeneratorManager = {
   colorRandomizer() {
     return Math.floor(Math.random() * 256);
   },
@@ -40,7 +40,7 @@ const GridManager = {
         const grid = this.createGrid();
 
         // generating the colors for the grid
-        const gridColor = colorGeneratorManager.colorGenerator();
+        const gridColor = ColorGeneratorManager.colorGenerator();
         grid.style.backgroundColor = gridColor;
 
         // initial opacity
