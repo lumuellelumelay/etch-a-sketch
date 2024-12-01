@@ -1,9 +1,3 @@
-// Need to do
-// Features:
-// ------ Able to delete the grid
-// ------ Able to clear the grid
-// ------ Able to make the the grid darker when it pass through again
-
 // Function helper for color generator
 const colorGeneratorManager = {
   colorRandomizer() {
